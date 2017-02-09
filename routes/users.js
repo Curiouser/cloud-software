@@ -1,73 +1,81 @@
-const UserDAO = require('../models/UserDAO');
+const DB = require('../models/database'); // constante DB car on veut surtout pas que DB soit modifié
 
-var express = require('express');
-var router = express.Router();
+module.exports = { //exporte toutes les méthodes définies ci dessous
 
-router.get('/', function(req, res, next) {
-	UserDAO.getAll()
-	.then((users) => {
-		res.send(users);
-	});
-});
+	getAll() {
+	return DB.query('SELECT * FROM users') //pas besoin de then, return db query est suffisant, on l'a fait juste pour l'exemple
+		.then((result) => { //une fois qu'on a le result de la query, on fait le .then
+			return result;
+		})
+		.catch((error) => {
+		throw error;
+		})
+	},
 
-router.get('/:id', function(req, res, next) {
-	var id = parseInt(req.params.id)
-	UserDAO.getByID(id)
-	.then((users) => {
-		res.send(users);
-	})
-	.catch((error) =>
-		res.send(error)
-		)
+	getByID(_id) {
+	return DB.query('SELECT * FROM users WHERE id = ' + _id) 
+		.then((result) => { 
+			return result;
+		})
+		.catch((error) => {
+		throw error;
+		})
+	},
 
-});
+	createUser(username, email) {
+	return DB.query(
+		'INSERT INTO users(name, email) VALUES (${u},  ${e}) returning *',{
+			u: username,
+			e: email
+		})
+		.then((result) => {
+			return result;
+		})
+		.catch((error) => {
+			throw error;
+		})
+	},
 
-router.post('/', function(req, res, next) {
-	var name = req.body.user.name
-	var email = req.body.user.email
-	console.log(name +  ' ' + email)
-	UserDAO.createUser(name, email)
-	.then((result) => {
-		res.status(200)
-		res.send(result)
-	})
-		.catch((error) =>
-		res.send(error)
-		)
+	deleteUser(id) {
+	return DB.query(
+		'DELETE FROM users WHERE id = ${i} returning *',{
+			i: id
+		})
+		.then((result) => {
+			return result;
+		})
+		.catch((error) => {
+			throw error;
+		})
+	},
 
-});
-	
+	deleteUser(id) {
+	return DB.query(
+		'DELETE FROM users WHERE id = ${i} returning *',{
+			i: id
+		})
+		.then((result) => {
+			return result;
+		})
+		.catch((error) => {
+			throw error;
+		})
+	},
 
-router.delete('/', function(req, res, next) {
-	var id = req.body.user.id
-	UserDAO.deleteUser(id)
-	.then((result) => {
-		res.status(200)
-		res.send(result)
-	})
-		.catch((error) =>
-		res.send(error)
-		)
+	updateUser(id, name, email, alliance_id) {
+	return DB.query(
+		'UPDATE users SET name= ${n}, email= ${e}, alliance_id= ${a} WHERE id = ${i} ',{
+			i: id,
+			n: name,
+			e: email,
+			a: alliance_id
+		})
+		.then((result) => {
+			return result;
+		})
+		.catch((error) => {
+			throw error;
+		})
+	}
 
-});
-
-
-router.put('/', function(req, res, next) {
-	var id = req.body.user.id
-	var name = req.body.user.name
-	var email = req.body.user.email
-	var alliance = req.body.user.alliance
-	UserDAO.updateUser(id, name, email, alliance)
-	.then((result) => {
-		res.status(200)
-		res.send(result)
-	})
-		.catch((error) =>
-		res.send(error)
-		)
-
-});
-	
-
-
-module.exports = router;
+}

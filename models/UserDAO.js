@@ -62,10 +62,13 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 		})
 	},
 
-	updateUser(id, name, email, alliance) {
+	updateUser(id, name, email, alliance_id) {
 	return DB.query(
-		'SELECT * FROM users WHERE id = ${i} ',{ // non faire un update
-			i: id
+		'UPDATE users SET name= ${n}, email= ${e}, alliance_id= ${a} WHERE id = ${i} returning *',{
+			i: id,
+			n: name,
+			e: email,
+			a: alliance_id
 		})
 		.then((result) => {
 			return result;
