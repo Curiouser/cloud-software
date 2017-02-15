@@ -1,25 +1,21 @@
-const UserDAO = require('../models/UserDAO');
+const characterDAO = require('../models/characterDAO');
 
 var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-	UserDAO.getAll()
-	.then((users) => {
-		res.send(users);
+	characterDAO.getAll()
+	.then((character) => {
+		res.send(character);
 	});
 });
 
+
 router.get('/:id', function(req, res, next) {
 	var id = parseInt(req.params.id)
-	UserDAO.getByID(id)
-	.then((users) => {
-		res.status(200)
-		.json({
-			status: "success",
-			user: users
-		});
-		res.send()
+	characterDAO.getByID(id)
+	.then((character) => {
+		res.send(character);
 	})
 	.catch((error) =>
 		res.send(error)
@@ -28,10 +24,12 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-	var name = req.body.user.name
-	var email = req.body.user.email
-	console.log(name +  ' ' + email)
-	UserDAO.createUser(name, email)
+	var name = req.body.character.name
+	var charclass = req.body.character.class
+	var user_id = req.body.character.user_id
+	var point = req.body.character.point
+
+	characterDAO.createCharacter(name, charclass, user_id, point)
 	.then((result) => {
 		res.status(200)
 		res.send(result)
@@ -41,13 +39,12 @@ router.post('/', function(req, res, next) {
 		)
 
 });
-	
 
 router.delete('/:id', function(req, res, next) {
 	var urlid = parseInt(req.params.id)
-	var id = req.body.user.id
+	var id = req.body.character.id
 	if(urlid==id){
-		UserDAO.deleteUser(id)
+		characterDAO.deleteCharacter(id)
 		.then((result) => {
 			res.status(200)
 			res.send(result)
@@ -58,16 +55,13 @@ router.delete('/:id', function(req, res, next) {
 	}
 
 });
-
 
 router.put('/:id', function(req, res, next) {
 	var urlid = parseInt(req.params.id)
-	var id = req.body.user.id
-	var name = req.body.user.name
-	var email = req.body.user.email
-	var alliance = req.body.user.alliance
+	var id = req.body.character.id
+	var name = req.body.character.name
 	if (urlid == id){
-		UserDAO.updateUser(id, name, email, alliance)
+		characterDAO.updatecharacter(id, name)
 		.then((result) => {
 			res.status(200)
 			res.send(result)
@@ -78,7 +72,5 @@ router.put('/:id', function(req, res, next) {
 	}
 
 });
-	
-
 
 module.exports = router;

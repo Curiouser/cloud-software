@@ -3,7 +3,7 @@ const DB = require('../models/database'); // constante DB car on veut surtout pa
 module.exports = { //exporte toutes les méthodes définies ci dessous
 
 	getAll() {
-	return DB.accessor.query('SELECT * FROM users') //pas besoin de then, return db query est suffisant, on l'a fait juste pour l'exemple
+	return DB.accessor.query('SELECT * FROM characters') //pas besoin de then, return db query est suffisant, on l'a fait juste pour l'exemple
 		.then((result) => { //une fois qu'on a le result de la query, on fait le .then
 			return result;
 		})
@@ -13,7 +13,7 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 	},
 
 	getByID(_id) {
-	return DB.accessor.query('SELECT * FROM users WHERE id = ' + _id) 
+	return DB.accessor.query('SELECT * FROM characters WHERE id = ' + _id) 
 		.then((result) => { 
 			return result;
 		})
@@ -22,11 +22,13 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 		})
 	},
 
-	createUser(username, email) {
+	createCharacter(name, charclass, user_id, point) {
 	return DB.accessor.query(
-		'INSERT INTO users(name, email) VALUES (${u},  ${e}) returning *',{
-			u: username,
-			e: email
+		'INSERT INTO characters(name, class, user_id, point) VALUES (${n}, ${c}, ${uid}, ${p}) returning *',{
+			n: name,
+			c: charclass,
+			uid: user_id,
+			p: point
 		})
 		.then((result) => {
 			return result;
@@ -36,9 +38,9 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 		})
 	},
 
-	deleteUser(id) {
+	deleteCharacter(id) {
 	return DB.accessor.query(
-		'DELETE FROM users WHERE id = ${i} returning *',{
+		'DELETE FROM characters WHERE id = ${i} returning *',{
 			i: id
 		})
 		.then((result) => {
@@ -49,13 +51,11 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 		})
 	},
 
-	updateUser(id, name, email, alliance_id) {
+	updateCharacter(id, name) {
 	return DB.accessor.query(
-		'UPDATE users SET name= ${n}, email= ${e}, alliance_id= ${a} WHERE id = ${i} returning *',{
+		'UPDATE characters SET name=${n} WHERE id = ${i} returning *',{
 			i: id,
-			n: name,
-			e: email,
-			a: alliance_id
+			n: name
 		})
 		.then((result) => {
 			return result;
@@ -64,5 +64,4 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 			throw error;
 		})
 	}
-
 }
