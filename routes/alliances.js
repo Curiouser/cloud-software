@@ -6,20 +6,102 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
 	AllianceDAO.getAll()
 	.then((alliances) => {
-		res.send(alliances);
-	});
+		res.status(200)
+		.json({
+			status: "success",
+			alliances: alliances
+		});
+		res.send()
+	})
+	.catch((error) =>
+		res.status(500)
+		.json({
+		status: 'Error',
+		message: error
+		})
+	)
 });
 
 router.get('/:id', function(req, res, next) {
 	var id = parseInt(req.params.id)
 	AllianceDAO.getByID(id)
 	.then((alliances) => {
-		res.send(alliances);
+		res.status(200)
+		.json({
+			status: "success",
+			alliance: alliances
+		});
+		res.send()
 	})
 	.catch((error) =>
-		res.send(error)
-		)
+		res.status(500)
+		.json({
+		status: 'Error',
+		message: error
+		})
+	)
 
+});
+
+router.get('/:id/users', function(req, res, next) {
+	var urlid = parseInt(req.params.id)
+	AllianceDAO.getUsersFromID(urlid)
+	.then((users) => {
+		res.status(200)
+		.json({
+			status: "success",
+			users: users
+		});
+		res.send()
+	})
+	.catch((error) =>
+		res.status(500)
+		.json({
+		status: 'Error',
+		message: error
+		})
+	)
+});
+
+router.get('/:id/characters', function(req, res, next) {
+	var urlid = parseInt(req.params.id)
+	AllianceDAO.getCharactersFromID(urlid)
+	.then((characters) => {
+		res.status(200)
+		.json({
+			status: "success",
+			characters: characters
+		});
+		res.send()
+	})
+	.catch((error) =>
+		res.status(500)
+		.json({
+		status: 'Error',
+		message: error
+		})
+	)
+});
+
+router.get('/:id/characters/:class', function(req, res, next) {
+	var urlid = parseInt(req.params.id)
+	var paramClass = req.params.class
+	AllianceDAO.getCharactersFromIDWithClass(urlid, paramClass)
+	.then((characters) => {
+		res.status(200)
+		.json({
+			status: "success",
+			characters: characters
+		});
+		res.send()
+	})
+	.catch((error) =>
+		res.status(500)
+		.json({
+		status: 'Error',
+		message: error
+		})
+	)
 });
 
 router.post('/', function(req, res, next) {
@@ -27,51 +109,65 @@ router.post('/', function(req, res, next) {
 	AllianceDAO.createAlliance(name)
 	.then((result) => {
 		res.status(200)
-		res.send(result)
+		.json({
+			status: "success",
+			message: "Inserted one alliance",
+			alliance: result
+		});
+		res.send()
 	})
-		.catch((error) =>
-		res.send(error)
-		)
+	.catch((error) =>
+		res.status(500)
+		.json({
+		status: 'Error',
+		message: error
+		})
+	)
 
 });
 
 router.delete('/:id', function(req, res, next) {
 	var urlid = parseInt(req.params.id)
-	var id = req.body.alliance.id
-	if(urlid==id){
-		AllianceDAO.deleteAlliance(id)
-		.then((result) => {
-			res.send(result)
+	AllianceDAO.deleteAlliance(urlid)
+	.then((result) => {
+		res.status(200)
+		.json({
+			status: "success",
+			message: result
+		});
+		res.send()
+	})
+	.catch((error) =>
+		res.status(500)
+		.json({
+		status: 'Error',
+		message: error
 		})
-			.catch((error) => {
-				res.status(500)
-					.json({
-						status: 'Error',
-						message: error
-					})
-			})
-	}
+	)
 
 });
 
 router.put('/:id', function(req, res, next) {
 	var urlid = parseInt(req.params.id)
-	var id = req.body.alliance.id
 	var name = req.body.alliance.name
-	if (urlid == id){
-		AllianceDAO.updateAlliance(id, name)
-		.then((result) => {
-			res.status(200)
-			res.send(result)
+	AllianceDAO.updateAlliance(urlid, name)
+	.then((result) => {
+		res.status(200)
+		.json({
+			status: "success",
+			message: "modified a alliance",
+			alliance: result
+		});
+		res.send()
+	})
+	.catch((error) =>
+		res.status(500)
+		.json({
+		status: 'Error',
+		message: error
 		})
-			.catch((error) => {
-			res.status(500)
-				.json({
-					status: 'Error',
-					message: error
-				})
-			})
-	}
+	)
+
 
 });
 

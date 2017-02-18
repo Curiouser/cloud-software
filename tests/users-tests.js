@@ -10,7 +10,7 @@ const postUser = require('./results/users/post-users.json');
 const deleteUser = require('./results/users/delete-users-1.json');
 const putUser = require('./results/users/put-users-1.json');
 const sql = DB.sql('../dumps/data-tests.sql');
-// const sql = require('../dumps/data-tests.sql');
+
 
 test.serial('Users - GET - Get all users', t => {
   return DB.accessor.query(sql)

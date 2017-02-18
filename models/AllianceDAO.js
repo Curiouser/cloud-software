@@ -13,7 +13,40 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 	},
 
 	getByID(_id) {
-	return DB.accessor.query('SELECT * FROM alliances WHERE id = ' + _id) 
+	return DB.accessor.one('SELECT * FROM alliances WHERE id =${i}',{i: _id}) 
+		.then((result) => { 
+			return result;
+		})
+		.catch((error) => {
+		throw error;
+		})
+	},
+
+	getUsersFromID(_id) {
+	return DB.accessor.any('SELECT * FROM Users WHERE alliance_id =${i}',{i: _id}) 
+		.then((result) => { 
+			return result;
+		})
+		.catch((error) => {
+		throw error;
+		})
+	},
+
+	getCharactersFromID(_id) {
+	return DB.accessor.any('select C.id, C.name, C.user_id, C.class, C.position from characters C '
+			+'LEFT JOIN users U on C.user_id=U.id where U.alliance_id=${id} ORDER BY c.id',{id: _id}) 
+		.then((result) => { 
+			return result;
+		})
+		.catch((error) => {
+		throw error;
+		})
+	},
+
+	getCharactersFromIDWithClass(urlid, paramClass){
+	//select c.id, C.name, C.user_id, C.class, C.position from characters C LEFT JOIN users U on C.user_id=U.id where U.alliance_id=1 ORDER BY c.id
+	return DB.accessor.any('select C.id, C.name, C.user_id, C.class, C.position from characters C '
+			+'LEFT JOIN users U on C.user_id=U.id where U.alliance_id=${id} AND C.class= ${c} ORDER BY c.id',{id: urlid, c: paramClass}) 
 		.then((result) => { 
 			return result;
 		})
@@ -23,7 +56,7 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 	},
 
 	createAlliance(name) {
-	return DB.accessor.query(
+	return DB.accessor.one(
 		'INSERT INTO alliances(name) VALUES (${a}) returning *',{
 			a: name
 		})
@@ -37,21 +70,19 @@ module.exports = { //exporte toutes les méthodes définies ci dessous
 
 	deleteAlliance(id) {
 	return DB.accessor.query(
-		'DELETE FROM alliances WHERE id = ${i} returning *',{
+		'DELETE FROM alliances WHERE id = ${i}',{
 			i: id
 		})
 		.then((result) => {
-			console.log("deletealliance result")
 			return result;
 		})
 		.catch((error) => {
-			console.log("deletealliance catch triggered" + error.message)
 			throw error;
 		})
 	},
 
 	updateAlliance(id, name) {
-	return DB.accessor.query(
+	return DB.accessor.one(
 		'UPDATE alliances SET name=${n} WHERE id = ${i} returning *',{
 			i: id,
 			n: name
