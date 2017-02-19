@@ -64,6 +64,7 @@ router.get('/:id/characters', function(req, res, next) {
 
 
 router.post('/', function(req, res, next) {
+	console.log(req.body)
 	var name = req.body.user.name
 	var email = req.body.user.email
 	UserDAO.createUser(name, email)

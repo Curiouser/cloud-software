@@ -12,6 +12,7 @@
     "debug": "~2.6.0",
     "express": "~4.14.1",
     "jade": "~1.11.0",
+    "leaflet": "^1.0.3",
     "morgan": "~1.7.0",
     "pg-promise": "^5.5.6",
     "serve-favicon": "~2.3.2"
