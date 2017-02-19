@@ -35,7 +35,7 @@ function populateTable() {
 
 function populateMap() {
     var origin = [48.792716,2.359279];
-    var map = L.map('map').setView(origin, 15);
+    var map = L.map('mapContent').setView(origin, 15);
     L.tileLayer(
         'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 20
